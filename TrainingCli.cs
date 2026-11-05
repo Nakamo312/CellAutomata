@@ -50,7 +50,7 @@ public static class TrainingCli
             Console.WriteLine(FormattableString.Invariant(
                 $"generation={generation} doors={fitness.ConnectedDoors}/{scenario.Doors.Length} progress={fitness.ConnectionProgress:F4} shape={fitness.ShapeScore:F4} clusters={metrics.ClusterCount}")), output);
         Console.WriteLine($"Saved {Path.GetFullPath(output)} (best found at generation {artifact.FoundAtGeneration}).");
-        Console.WriteLine(string.Join(Environment.NewLine, artifact.FinalGrid));
+        Console.WriteLine(CellAutomata.Render(artifact.Replay().Grid));
         Console.WriteLine(JsonSerializer.Serialize(artifact.Metrics, TrainingArtifact.JsonOptions));
     }
 
@@ -65,11 +65,11 @@ public static class TrainingCli
         {
             if (!Console.IsOutputRedirected) Console.Clear();
             Console.WriteLine($"Step {step}/{artifact.Training.Steps}");
-            Console.WriteLine(string.Join(Environment.NewLine, SimulationRunner.ToRows(grid)));
+            Console.WriteLine(CellAutomata.Render(grid));
             Thread.Sleep(delay);
         } : null;
         var result = artifact.Replay(animate);
-        Console.WriteLine(string.Join(Environment.NewLine, SimulationRunner.ToRows(result.Grid)));
+        Console.WriteLine(CellAutomata.Render(result.Grid));
         Console.WriteLine(JsonSerializer.Serialize(artifact.Metrics, TrainingArtifact.JsonOptions));
         Console.WriteLine("Replay verified: grid, metrics and fitness match the saved result.");
     }

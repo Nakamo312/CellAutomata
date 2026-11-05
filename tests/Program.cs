@@ -11,6 +11,8 @@ var checks = new (string Name, Action Check)[]
     ("unchanged pictures can precede lifetime-triggered growth", DelayedGrowth),
     ("gene priority controls competing transitions", RulePriority),
     ("metric bands and fitness priorities", Scoring),
+    ("thin connected roads outrank a connected flood", RoadCompositionRanking),
+    ("interior obstacle clusters outrank wall-grown corner masses", ClusterPlacementRanking),
     ("training, JSON round trip and verified replay are deterministic", TrainingReplay),
     ("invalid configurations are rejected", InvalidConfiguration)
 };
@@ -172,6 +174,52 @@ static void TrainingReplay()
         Throws<InvalidOperationException>(() => loaded.Replay());
     }
     finally { if (File.Exists(path)) File.Delete(path); }
+}
+
+static (RoomScenario Scenario, CellType[,] Grid) CompositionFixture(bool wallClusters = false)
+{
+    var scenario = new RoomScenario(15, 15,
+        [new(0, 7), new(14, 7), new(7, 0), new(7, 14)], new(7, 7), []);
+    var grid = scenario.CreateInitialGrid();
+    for (int n = 1; n < 14; n++)
+    {
+        if (n != 7) grid[n, 7] = grid[7, n] = CellType.Road;
+    }
+    int low = wallClusters ? 1 : 2, high = wallClusters ? 11 : 10;
+    foreach (int left in new[] { low, high })
+    foreach (int top in new[] { low, high })
+    for (int x = left; x < left + 3; x++)
+    for (int y = top; y < top + 3; y++) grid[x, y] = CellType.Obstacle;
+    return (scenario, grid);
+}
+
+static void RoadCompositionRanking()
+{
+    var (scenario, good) = CompositionFixture();
+    var flooded = (CellType[,])good.Clone();
+    for (int x = 1; x < 14; x++)
+    for (int y = 1; y < 14; y++)
+        if (flooded[x, y] == CellType.Empty) flooded[x, y] = CellType.Road;
+    var goodMetrics = RoomMetrics.Measure(good, scenario);
+    var badMetrics = RoomMetrics.Measure(flooded, scenario);
+    var goodScore = RoomEvaluator.Evaluate(goodMetrics, new());
+    var badScore = RoomEvaluator.Evaluate(badMetrics, new());
+    Assert(goodMetrics.ConnectedDoors == 4 && badMetrics.ConnectedDoors == 4);
+    Assert(goodScore.CompareTo(badScore) > 0);
+    Assert(goodScore.ShapeScore > .9 && badScore.ShapeScore < .25,
+        $"Connected flooding must not score almost perfectly: good={goodScore.ShapeScore}, flood={badScore.ShapeScore}");
+}
+
+static void ClusterPlacementRanking()
+{
+    var (scenario, good) = CompositionFixture();
+    var (_, wallMasses) = CompositionFixture(wallClusters: true);
+    var goodMetrics = RoomMetrics.Measure(good, scenario);
+    var wallMetrics = RoomMetrics.Measure(wallMasses, scenario);
+    Near(goodMetrics.ObstacleFraction, wallMetrics.ObstacleFraction);
+    Assert(goodMetrics.ClusterCount == wallMetrics.ClusterCount);
+    Assert(RoomEvaluator.Evaluate(goodMetrics, new()).CompareTo(RoomEvaluator.Evaluate(wallMetrics, new())) > 0,
+        "Equal counts and sizes must not hide the difference between interior clusters and corner masses");
 }
 
 static void InvalidConfiguration()
