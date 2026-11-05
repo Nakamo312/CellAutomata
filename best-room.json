@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "scenario": {
+    "width": 30,
+    "height": 20,
+    "doors": [
+      {
+        "x": 0,
+        "y": 10
+      },
+      {
+        "x": 29,
+        "y": 10
+      },
+      {
+        "x": 15,
+        "y": 0
+      },
+      {
+        "x": 15,
+        "y": 19
+      }
+    ],
+    "hub": {
+      "x": 15,
+      "y": 10
+    },
+    "obstacleSeeds": [
+      {
+        "x": 10,
+        "y": 6
+      },
+      {
+        "x": 20,
+        "y": 13
+      }
+    ]
+  },
+  "training": {
+    "generations": 100,
+    "populationSize": 32,
+    "steps": 100,
+    "simulationSeed": 42,
+    "searchSeed": 1337,
+    "eliteCount": 2,
+    "tournamentSize": 3,
+    "patience": 30,
+    "maxLifetime": 8,
+    "mutationRate": 0.2
+  },
+  "evaluation": {
+    "roadFraction": {
+      "minimum": 0.08,
+      "maximum": 0.22,
+      "falloff": 0.8
+    },
+    "obstacleFraction": {
+      "minimum": 0.15,
+      "maximum": 0.35,
+      "falloff": 0.35
+    },
+    "clusterCount": {
+      "minimum": 2,
+      "maximum": 6,
+      "falloff": 6
+    },
+    "clusterCompactness": {
+      "minimum": 0.25,
+      "maximum": 1,
+      "falloff": 0.25
+    },
+    "minimumClusterArea": 3
+  },
+  "rules": [
+    {
+      "source": "Empty",
+      "neighbor": "Hub",
+      "target": "Road",
+      "count": 2,
+      "lifetime": 1,
+      "chance": 0.89414024,
+      "priority": 25
+    },
+    {
+      "source": "Empty",
+      "neighbor": "Road",
+      "target": "Road",
+      "count": 1,
+      "lifetime": 0,
+      "chance": 0.32426375,
+      "priority": 39
+    },
+    {
+      "source": "Empty",
+      "neighbor": "Obstacle",
+      "target": "Obstacle",
+      "count": 3,
+      "lifetime": 2,
+      "chance": 0.9663589,
+      "priority": 21
+    },
+    {
+      "source": "Road",
+      "neighbor": "Road",
+      "target": "Empty",
+      "count": 6,
+      "lifetime": 0,
+      "chance": 0.85197,
+      "priority": 29
+    },
+    {
+      "source": "Obstacle",
+      "neighbor": "Empty",
+      "target": "Empty",
+      "count": 2,
+      "lifetime": 7,
+      "chance": 0.328143,
+      "priority": 0
+    }
+  ],
+  "foundAtGeneration": 56,
+  "metrics": {
+    "connectedDoors": 4,
+    "doorDistance": 0,
+    "connectionProgress": 1,
+    "disconnectedRoadFraction": 0.022727272727272728,
+    "roadFraction": 0.42857142857142855,
+    "obstacleFraction": 0.34325396825396826,
+    "clusterCount": 4,
+    "smallClusterFraction": 0,
+    "clusterCompactness": 0.40519285116040993
+  },
+  "fitness": {
+    "connectedDoors": 4,
+    "connectionProgress": 1,
+    "shapeScore": 0.9527597402597402
+  },
+  "finalGrid": [
+    "###############\u002B##############",
+    "###############\u002B\u002B#############",
+    "############\u002B\u002B\u002B.\u002B\u002B############",
+    "###########\u002B.\u002B\u002B.\u002B.\u002B###########",
+    "##########\u002B.\u002B\u002B\u002B\u002B\u002B.\u002B\u002B\u002B\u002B\u002B\u002B\u002B\u002B####",
+    "####\u002B\u002B\u002B\u002B\u002B\u002B\u002B...\u002B.\u002B..\u002B\u002B\u002B...\u002B####",
+    "####\u002B..\u002B......\u002B....\u002B.\u002B..\u002B\u002B####",
+    "##\u002B.\u002B\u002B.\u002B\u002B.\u002B...\u002B\u002B\u002B\u002B.\u002B\u002B\u002B.\u002B\u002B\u002B\u002B###",
+    "##\u002B.\u002B\u002B..\u002B.\u002B.\u002B..\u002B.\u002B.\u002B\u002B\u002B\u002B\u002B\u002B.\u002B\u002B##",
+    "##\u002B.\u002B.\u002B.\u002B.\u002B\u002B.\u002B\u002B\u002B\u002B....\u002B.\u002B.\u002B\u002B.\u002B#",
+    "\u002B\u002B...\u002B\u002B\u002B\u002B.\u002B\u002B\u002B.\u002BH\u002B\u002B\u002B..\u002B.\u002B\u002B\u002B\u002B.\u002B\u002B",
+    "#\u002B\u002B\u002B.\u002B..\u002B.\u002B.\u002B\u002B\u002B\u002B....\u002B\u002B.\u002B\u002B..\u002B\u002B#",
+    "#\u002B\u002B..\u002B..\u002B.\u002B\u002B\u002B\u002B.\u002B.\u002B\u002B\u002B\u002B\u002B\u002B\u002B\u002B\u002B\u002B\u002B##",
+    "##\u002B\u002B\u002B.\u002B\u002B\u002B\u002B\u002B..\u002B..\u002B..\u002B.\u002B..\u002B..\u002B##",
+    "##\u002B\u002B.\u002B.\u002B.\u002B\u002B.\u002B...\u002B\u002B\u002B\u002B\u002B\u002B\u002B\u002B\u002B.\u002B\u002B##",
+    "###\u002B\u002B\u002B\u002B\u002B\u002B\u002B\u002B.\u002B\u002B\u002B\u002B\u002B..\u002B\u002B##\u002B\u002B.\u002B###",
+    "##########\u002B\u002B\u002B\u002B\u002B\u002B.\u002B\u002B\u002B####\u002B\u002B####",
+    "##############\u002B\u002B\u002B.\u002B###########",
+    "##############\u002B\u002B\u002B#############",
+    "###############\u002B##############"
+  ]
+}

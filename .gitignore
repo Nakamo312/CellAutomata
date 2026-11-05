@@ -1,0 +1,5 @@
+bin/
+obj/
+.claude/cache/
+*.user
+*.suo
